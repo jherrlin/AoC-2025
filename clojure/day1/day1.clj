@@ -15,34 +15,32 @@ L82")
 
 (def start-value 50)
 
-(defn L [current v]
-  (let [hundreds (quot v 100)
-        rst      (rem v 100)
-        v'       (- current rst)]
-    [hundreds
-     (if-not (neg? v')
-        v'
-        (+ 100 v'))]))
-
-(defn R [current v]
-  (let [hundreds (quot v 100)
-        rst      (rem v 100)
-        v'       (+ rst current)]
-    [hundreds
-     (if-not (< 99 v')
-       v'
-       (abs (- 100 v')))]))
-
 (defn parse [s]
   (->> (clojure.string/split s #"\n")
        (map (fn [s']
               [(eval (symbol (str (first s'))))
                (Integer. (apply str (rest s')))]))))
 
+(defn L [current v]
+  (let [hundreds (quot v 100)
+        rst      (rem v 100)
+        v'       (- current rst)]
+    (if-not (neg? v')
+      v'
+      (+ 100 v'))))
+
+(defn R [current v]
+  (let [hundreds (quot v 100)
+        rst      (rem v 100)
+        v'       (+ rst current)]
+    (if-not (< 99 v')
+      v'
+      (abs (- 100 v')))))
+
 (defn calc [xs]
   (reduce
    (fn [[counter acc] [operator value]]
-     (let [[rem acc'] (operator acc value)]
+     (let [acc' (operator acc value)]
        [(if (= 0 acc') (inc counter) counter)
         acc']))
    [0 start-value]
@@ -61,21 +59,24 @@ L82")
 
 ;; === Problem 2 ===
 
+(defn q-r [v] [(quot v 100) (rem v 100)])
+
+(defn bump-pred [pred current v]
+  (and (not= current 0) (pred v) (not= v 0) (not= v 100)))
+
 (defn L [current v]
-  (let [hundreds (quot v 100)
-        rst      (rem v 100)
-        v'       (- current rst)
-        bump     (and (not= current 0) (neg? v') (not= v' 0) (not= v' 100))]
+  (let [[hundreds rst] (q-r v)
+        v'             (- current rst)
+        bump           (bump-pred neg? current v')]
     [(if bump (inc hundreds) hundreds)
      (if-not (neg? v')
-        v'
-        (+ 100 v'))]))
+       v'
+       (+ 100 v'))]))
 
 (defn R [current v]
-  (let [hundreds (quot v 100)
-        rst      (rem v 100)
-        v'       (+ rst current)
-        bump     (and (not= current 0) (< 99 v') (not= v' 100) (not= v' 0))]
+  (let [[hundreds rst] (q-r v)
+        v'             (+ rst current)
+        bump           (bump-pred #(< 99 %) current v')]
     [(if bump (inc hundreds) hundreds)
      (if-not (< 99 v')
        v'
