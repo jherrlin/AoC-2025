@@ -1,2 +1,52 @@
 .cpcache
 .nrepl-port
+
+## Build output
+bin/
+obj/
+out/
+artifacts/
+
+## Visual Studio / Rider / VS Code
+.vs/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Paket (if used)
+.paket/
+paket-files/
+
+## NuGet
+*.nupkg
+*.snupkg
+*.nuspec
+packages/
+# Leave this if using package restore:
+!packages/build/
+!packages/repositories.config
+
+## Generated files
+*.dll
+*.exe
+*.app
+*.log
+
+## F# specific
+*.fsi
+*.fs.js
+*.fsx.lock
+
+## Temporary files
+*.tmp
+*.temp
+*.swp
+
+## OS-specific
+# macOS
+.DS_Store
+# Windows
+Thumbs.db
+desktop.ini
