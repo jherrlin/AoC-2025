@@ -1,4 +1,6 @@
-﻿open System.IO
+﻿module Day3.Problem1
+
+open System.IO
 
 let input () = 
     let path = Path.Combine(Directory.GetCurrentDirectory(), "input.txt")

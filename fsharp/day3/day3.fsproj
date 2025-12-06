@@ -6,7 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Program.fs" />
+    <Compile Include="problem1.fs" />
+    <Compile Include="problem2.fs" />
   </ItemGroup>
 
 </Project>
