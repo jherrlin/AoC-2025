@@ -1,7 +1,6 @@
 (ns user
   (:require [clojure.string :as str]))
 
-
 (defn input []
   (->> "input.txt"
        slurp
@@ -20,14 +19,8 @@
   (mapv #(Integer/parseInt (str %)) line))
 
 (defn solve [acc nb bank]
-  (cond
-    (zero? nb)
+  (if (zero? nb)
     acc
-
-    (= nb (count bank))
-    (concat acc bank)
-
-    :else
     (let [split-index     (- (count bank) (dec nb))
           candidates      (take split-index bank)
           [next-idx max]  (->> (map-indexed vector candidates)
