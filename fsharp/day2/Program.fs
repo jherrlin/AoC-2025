@@ -15,7 +15,6 @@ let splitInHalf (s: string) =
     let b = s.Substring(half)
     a, b
     
-// SOMETHINGS WRONG, not done
 let calc (xs : string array) =
     xs
     |> Array.map (fun s -> s.Trim())
@@ -25,18 +24,17 @@ let calc (xs : string array) =
     |> List.concat
     |> List.map string
     |> List.map (fun s ->
-        let (f, s') = s |> splitInHalf
+        let (f, s') = splitInHalf s
         (s, f = s')
     )
     |> List.filter snd
     |> List.map (fst >> int64)
     |> List.sum
 
-// Test input works
 testInput
 |> calc
+// 1227775554
 
-// Not working
 input ()
 |> calc
-
+// 30323879646
