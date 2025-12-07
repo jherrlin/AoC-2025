@@ -38,3 +38,38 @@ testInput
 input ()
 |> calc
 // 30323879646
+
+
+// === Problem 2 ===
+
+let allEqual xs =
+    xs |> List.distinct |> List.length <= 1
+
+let chunks s =
+    seq {
+        for i in [1 .. (String.length s) - 1] 
+            -> Seq.toList s |> List.chunkBySize i |> allEqual
+    }
+
+let calc2 (xs : string array) =
+    xs
+    |> Array.map (fun s -> s.Trim())
+    |> Array.map (fun s -> 
+        let split = s.Split("-") 
+        [int64 split.[0] .. int64 split.[1]])
+    |> List.concat
+    |> List.map string
+    |> List.map (fun s -> 
+        let b = s |> chunks |> Seq.exists id
+        s, b)
+    |> List.filter snd
+    |> List.map (fst >> int64)
+    |> List.sum
+
+testInput
+|> calc2
+// 4174379265
+
+input ()
+|> calc2
+// 43872163557
