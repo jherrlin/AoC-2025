@@ -43,21 +43,25 @@
          [x' y'])
        (remove (fn [[x y]] (or (neg? x) (neg? y))))))
 
+(defn paper-around [lookup x y]
+  (let [currenct (get lookup [x y])]
+    (if (= currenct ".")
+      [[x y] nil]
+      (let [check-positions (adjacent-positions x y)
+            counts          (->> (mapv (fn [[x y]] (get lookup [x y])) check-positions)
+                                 (filter #(= "@" %))
+                                 count)]
+        [[x y] counts]))))
+
 (defn calc [s]
   (let [matrix (parse s)
         x-ys   (-> matrix count-x-y cartesian-product)
         lookup (->loopup matrix x-ys)]
     (->> x-ys
          (mapv (fn [[x y]]
-                 (let [currenct (get lookup [x y])]
-                   (if (= currenct ".")
-                     [[x y] false]
-                     (let [check-positions (adjacent-positions x y)
-                           counts          (->> (mapv (fn [[x y]] (get lookup [x y])) check-positions)
-                                                (filter #(= "@" %))
-                                                count)]
-                       [[x y] (< counts 4)])))))
-         (filter second)
+                 (paper-around lookup x y)))
+         (remove (comp nil? second))
+         (filter (fn [[_ s]] (< s 4)))
          (count))))
 
 (calc test-input)
@@ -65,3 +69,38 @@
 
 (calc input)
 ;; => 1416
+
+
+;; --- Problem 2 ---
+
+(defn next-generation-lookup [lookup to-remove]
+  (reduce
+   (fn [acc [k _]]
+     (assoc acc k "."))
+   lookup
+   to-remove))
+
+(defn ->to-remove [lookup x-ys]
+  (->> x-ys
+       (mapv (fn [[x y]]
+               (paper-around lookup x y)))
+       (remove (comp nil? second))
+       (filter (fn [[_ s]] (< s 4)))))
+
+(defn calc2 [in]
+  (let [matrix (parse in)
+        x-ys   (-> matrix count-x-y cartesian-product)]
+    (loop [lookup  (->loopup matrix x-ys)
+           counter 0]
+      (let [to-remove (->to-remove lookup x-ys)]
+      (if (empty? to-remove)
+        counter
+        (recur
+         (next-generation-lookup lookup to-remove)
+         (+ counter (count to-remove))))))))
+
+(calc2 test-input)
+;; => 43
+
+(calc2 input)
+;; => 9086
